@@ -997,10 +997,15 @@ struct edict_s
 	//================================
 	int			movetype;
 	int			flags;
-
+	int         fishinTime;
+	int         fishEnd;
+	int			luck, lure, strength, inventory, employment;
+	int			chum, superhook, longline, strongline, premiumbait;
+	int			dollars;
+	int			salmon, cod, bass, trout, mino, greatwhite, blobfish, tigerfish, whaleshark, angelfish;
 	char		*model;
 	float		freetime;			// sv.time when the object was freed
-	
+	int			determiner;
 	//
 	// only used locally in game, not by server
 	//

@@ -315,13 +315,13 @@ void HelpComputer (edict_t *ent)
 
 	// send the layout
 	Com_sprintf (string, sizeof(string),
-		"xv 32 yv 8 picn help "			// background
-		"xv 202 yv 12 string2 \"%s\" "		// skill
-		"xv 0 yv 24 cstring2 \"%s\" "		// level name
-		"xv 0 yv 54 cstring2 \"%s\" "		// help 1
-		"xv 0 yv 110 cstring2 \"%s\" "		// help 2
-		"xv 50 yv 164 string2 \" kills     goals    secrets\" "
-		"xv 50 yv 172 string2 \"%3i/%3i     %i/%i       %i/%i\" ", 
+		"xv 32 yv 8 picn help :3 "			// background
+		"xv 202 yv 12 string2 \"S to sell all fish\" "		// skill
+		"xv 0 yv 24 cstring2 \"Luck = 10 Dollars, L\" "		// level name
+		"xv 0 yv 54 cstring2 \"Lure = 10 Dollars, U\" "		// help 1
+		"xv 0 yv 110 cstring2 \"Strength = 100 Dollars, T \n All Items 20 Dollars: Chum 1, Superhook 2, Long Line 3, Strong Line 4, Premium Bait 5\" "		// help 2
+		"xv 50 yv 164 string2 \"Employment = 10 Dollars, E\" "
+		"xv 50 yv 172 string2 \"Inventory = 10 Dollars, I\" ",
 		sk,
 		level.level_name,
 		game.helpmessage1,
@@ -334,6 +334,44 @@ void HelpComputer (edict_t *ent)
 	gi.WriteString (string);
 	gi.unicast (ent, true);
 }
+//new code stuff
+void HelpComputer2(edict_t* ent)
+{
+	char	string[1024];
+	char* sk;
+
+	if (skill->value == 0)
+		sk = "easy";
+	else if (skill->value == 1)
+		sk = "medium";
+	else if (skill->value == 2)
+		sk = "hard";
+	else
+		sk = "hard+";
+
+	// send the layout
+	Com_sprintf(string, sizeof(string),
+		"xv 32 yv 8 picn help :3 "			// background
+		"xv 202 yv 12 string2 \"Welcome to Fishing\" "		// skill
+		"xv 0 yv 24 cstring2 \"Use the shop to buy Items/Upgrades and Sell fish\" "		// level name
+		"xv -10 yv 54 cstring2 \"Use the command Fish to Fish and add the respective number to use a single use item \" "		// help 1
+		"xv -10 yv 70 cstring2 \"0=chum, 1=superhook, 3=longerline, 4=strongerline, 5=premiumbait\" "
+		"xv -10 yv 110 cstring2 \"Inventory increases the number of fish held \n Luck drops a second fish\" "		// help 2
+		"xv 0 yv 164 string2 \"Strength increases the time to catch a fish\n Lure catches better fish\" "
+		"xv 0 yv 172 string2 \"Employment gives 5 dollars  for the level of employment for each catch \" ",
+		sk,
+		level.level_name,
+		game.helpmessage1,
+		game.helpmessage2,
+		level.killed_monsters, level.total_monsters,
+		level.found_goals, level.total_goals,
+		level.found_secrets, level.total_secrets);
+
+	gi.WriteByte(svc_layout);
+	gi.WriteString(string);
+	gi.unicast(ent, true);
+}
+
 
 
 /*
@@ -363,7 +401,14 @@ void Cmd_Help_f (edict_t *ent)
 
 	ent->client->showhelp = true;
 	ent->client->pers.helpchanged = 0;
-	HelpComputer (ent);
+	char* cmd;
+	cmd = gi.args(); 
+	if (Q_stricmp(cmd, "fishin") == 0) {
+		HelpComputer2(ent);
+	}
+	else {
+		HelpComputer(ent);
+	}
 }
 
 
@@ -384,7 +429,7 @@ void G_SetStats (edict_t *ent)
 	// health
 	//
 	ent->client->ps.stats[STAT_HEALTH_ICON] = level.pic_health;
-	ent->client->ps.stats[STAT_HEALTH] = ent->health;
+	ent->client->ps.stats[STAT_HEALTH] = ent->mino + ent->bass + ent->cod + ent->trout + ent->salmon + ent->greatwhite + ent->whaleshark + ent->tigerfish + ent->blobfish + ent->angelfish;
 
 	//
 	// ammo
@@ -392,13 +437,13 @@ void G_SetStats (edict_t *ent)
 	if (!ent->client->ammo_index /* || !ent->client->pers.inventory[ent->client->ammo_index] */)
 	{
 		ent->client->ps.stats[STAT_AMMO_ICON] = 0;
-		ent->client->ps.stats[STAT_AMMO] = 0;
+		ent->client->ps.stats[STAT_AMMO] = ent->inventory;
 	}
 	else
 	{
 		item = &itemlist[ent->client->ammo_index];
 		ent->client->ps.stats[STAT_AMMO_ICON] = gi.imageindex (item->icon);
-		ent->client->ps.stats[STAT_AMMO] = ent->client->pers.inventory[ent->client->ammo_index];
+		ent->client->ps.stats[STAT_AMMO] = ent->inventory;
 	}
 	
 	//
@@ -420,18 +465,18 @@ void G_SetStats (edict_t *ent)
 	if (power_armor_type && (!index || (level.framenum & 8) ) )
 	{	// flash between power armor and other armor icon
 		ent->client->ps.stats[STAT_ARMOR_ICON] = gi.imageindex ("i_powershield");
-		ent->client->ps.stats[STAT_ARMOR] = cells;
+		ent->client->ps.stats[STAT_ARMOR] = ent->inventory;
 	}
 	else if (index)
 	{
 		item = GetItemByIndex (index);
 		ent->client->ps.stats[STAT_ARMOR_ICON] = gi.imageindex (item->icon);
-		ent->client->ps.stats[STAT_ARMOR] = ent->client->pers.inventory[index];
+		ent->client->ps.stats[STAT_ARMOR] = ent->inventory;
 	}
 	else
 	{
 		ent->client->ps.stats[STAT_ARMOR_ICON] = 0;
-		ent->client->ps.stats[STAT_ARMOR] = 0;
+		ent->client->ps.stats[STAT_ARMOR] = ent->inventory;
 	}
 
 	//

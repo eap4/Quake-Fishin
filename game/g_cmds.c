@@ -264,7 +264,7 @@ void Cmd_Give_f (edict_t *ent)
 		it = FindItem (name);
 		if (!it)
 		{
-			gi.cprintf (ent, PRINT_HIGH, "unknown item\n");
+			gi.cprintf (ent, PRINT_HIGH, "unknown item \n");
 			return;
 		}
 	}
@@ -393,32 +393,123 @@ Cmd_Use_f
 Use an inventory item
 ==================
 */
-void Cmd_Use_f (edict_t *ent)
+void Cmd_Use_f(edict_t* ent)
 {
+
 	int			index;
-	gitem_t		*it;
-	char		*s;
-
-	s = gi.args();
-	it = FindItem (s);
-	if (!it)
-	{
-		gi.cprintf (ent, PRINT_HIGH, "unknown item: %s\n", s);
-		return;
+	gitem_t* it;
+	char* cmd;
+	cmd = gi.args();
+	it = FindItem(cmd);
+	if (ent->client->showhelp) {
+		if (Q_stricmp(cmd, "Blaster") == 0) {
+			if (ent->dollars >= 20) {
+				ent->dollars = ent->dollars - 20;
+				ent->chum++;
+				gi.cprintf(ent, PRINT_HIGH, "Got Chum, amount: %i\n", ent->chum);
+			}
+			else {
+				gi.cprintf(ent, PRINT_HIGH, "Not enough money\n");
+			}
+		}
+		else if (Q_stricmp(cmd, "Shotgun") == 0) {
+			if (ent->dollars >= 20) {
+				ent->dollars = ent->dollars - 20;
+				ent->superhook++;
+				gi.cprintf(ent, PRINT_HIGH, "Got Superhook, amount: %i\n", ent->superhook);
+			}
+			else {
+				gi.cprintf(ent, PRINT_HIGH, "Not enough money\n");
+			}
+		}
+		else if (Q_stricmp(cmd, "Super Shotgun") == 0) {
+			if (ent->dollars >= 20) {
+				ent->dollars = ent->dollars - 20;
+				ent->longline++;
+				gi.cprintf(ent, PRINT_HIGH, "Got LongerLine, amount: %i\n", ent->longline);
+			}
+			else {
+				gi.cprintf(ent, PRINT_HIGH, "Not enough money\n");
+			}
+		}
+		else if (Q_stricmp(cmd, "Machinegun") == 0) {
+			if (ent->dollars >= 20) {
+				ent->dollars = ent->dollars - 20;
+				ent->strongline++;
+				gi.cprintf(ent, PRINT_HIGH, "Got StrongerLine, amount: %i\n", ent->strongline);
+			}
+			else {
+				gi.cprintf(ent, PRINT_HIGH, "Not enough money\n");
+			}
+		}
+		else if (Q_stricmp(cmd, "Chaingun") == 0) {
+			if (ent->dollars >= 20) {
+				ent->dollars = ent->dollars - 20;
+				ent->premiumbait++;
+				gi.cprintf(ent, PRINT_HIGH, "Got Premium Bait, amount: %i\n", ent->premiumbait);
+			}
+			else {
+				gi.cprintf(ent, PRINT_HIGH, "Not enough money\n");
+			}
+		}
+		else if (Q_stricmp(cmd, "Silencer") == 0) {
+			int newdollars = (ent->mino * 1) + (ent->cod * 5) + (ent->trout * 10) + (ent->bass * 20) + (ent->salmon * 25) + (ent->greatwhite * 350) + (ent->tigerfish * 400) + (ent->blobfish * 100) + (ent->whaleshark * 200) + (ent->angelfish * (175 + rand()%100));
+			ent->dollars += newdollars;
+			gi.cprintf(ent, PRINT_HIGH, "Got %i dollars, total dollars: %i\n", newdollars, ent->dollars);
+			ent->salmon = 0, ent->cod = 0, ent->bass = 0, ent->trout = 0, ent->mino = 0, ent->greatwhite = 0, ent->blobfish = 0, ent->tigerfish = 0, ent->whaleshark = 0, ent->angelfish = 0;
+		}
+		else if (Q_stricmp(cmd, "Luck") == 0) {
+			if (ent->dollars >= 10) {
+				ent->dollars = ent->dollars - 10;
+				ent->luck++;
+				gi.cprintf(ent, PRINT_HIGH, "Luck stat increasd, current luck: %i\n", ent->luck);
+			}
+			else {
+				gi.cprintf(ent, PRINT_HIGH, "Not enough money\n");
+			}
+		}
+		else if (Q_stricmp(cmd, "Employment") == 0) {
+			if (ent->dollars >= 10) {
+				ent->dollars = ent->dollars - 10;
+				ent->employment++;
+				gi.cprintf(ent, PRINT_HIGH, "Employment increasd, current employment: %i\n", ent->employment);
+			}
+			else {
+				gi.cprintf(ent, PRINT_HIGH, "Not enough money\n");
+			}
+		}
+		else if (Q_stricmp(cmd, "Inventory") == 0) {
+			if (ent->dollars >= 10) {
+				ent->dollars = ent->dollars - 10;
+				ent->inventory++;
+				gi.cprintf(ent, PRINT_HIGH, "Inventory increasd, current inventory: %i\n", ent->inventory);
+			}
+			else {
+				gi.cprintf(ent, PRINT_HIGH, "Not enough money\n");
+			}
+		}
+		else if (Q_stricmp(cmd, "Lure") == 0) {
+			if (ent->dollars >= 10) {
+				ent->dollars = ent->dollars - 10;
+				ent->lure++;
+				gi.cprintf(ent, PRINT_HIGH, "Lure increasd, current lure: %i\n", ent->lure);
+			}
+			else {
+				gi.cprintf(ent, PRINT_HIGH, "Not enough money\n");
+			}
+		}
+		else if (Q_stricmp(cmd, "Strength") == 0) {
+			if (ent->dollars >= 100) {
+				ent->dollars = ent->dollars - 100;
+				ent->strength++;
+				gi.cprintf(ent, PRINT_HIGH, "Strength increasd, current strength: %i\n", ent->strength);
+			}
+			else {
+				gi.cprintf(ent, PRINT_HIGH, "Not enough money\n");
+			}
+		}
+		
 	}
-	if (!it->use)
-	{
-		gi.cprintf (ent, PRINT_HIGH, "Item is not usable.\n");
-		return;
-	}
-	index = ITEM_INDEX(it);
-	if (!ent->client->pers.inventory[index])
-	{
-		gi.cprintf (ent, PRINT_HIGH, "Out of item: %s\n", s);
-		return;
-	}
-
-	it->use (ent, it);
 }
 
 
@@ -899,6 +990,153 @@ void Cmd_PlayerList_f(edict_t *ent)
 	gi.cprintf(ent, PRINT_HIGH, "%s", text);
 }
 
+void Cmd_fish_f(edict_t* ent) {
+	char *cmd;
+	cmd = gi.args();
+	if (ent->mino + ent->bass + ent->cod + ent->trout + ent->salmon + ent->greatwhite + ent->whaleshark + ent->tigerfish + ent->blobfish + ent->angelfish < ent->inventory) {
+		if (Q_stricmp(cmd, "1") == 0 && ent->chum > 0) {
+			ent->determiner = 1;
+			gi.cprintf(ent, PRINT_HIGH, "Using chum\n");
+			ent->chum--;
+		}
+		else if (Q_stricmp(cmd, "2") == 0 && ent->superhook > 0) {
+			ent->determiner = 2;
+			gi.cprintf(ent, PRINT_HIGH, "Using superhook\n");
+			ent->superhook--;
+		}
+		else if (Q_stricmp(cmd, "3") == 0 && ent->longline > 0) {
+			ent->determiner = 3;
+			gi.cprintf(ent, PRINT_HIGH, "Using long line\n");
+			ent->longline--;
+		}
+		else if (Q_stricmp(cmd, "4") == 0 && ent->strongline > 0) {
+			ent->determiner = 4;
+			gi.cprintf(ent, PRINT_HIGH, "Using strong line\n");
+			ent->strongline--;
+		}
+		else if (Q_stricmp(cmd, "5") == 0 && ent->premiumbait > 0) {
+			ent->determiner = 5;
+			gi.cprintf(ent, PRINT_HIGH, "Using premium bait\n");
+			ent->premiumbait--;
+		}
+		else {
+			gi.cprintf(ent, PRINT_HIGH, "No item in use\n");
+		}
+
+		ent->fishinTime = level.time + rand() % 6 + 1;
+	} 
+	else {
+		gi.cprintf(ent, PRINT_HIGH, "Inventory is full\n");
+	}
+
+}
+
+void Cmd_catch_f(edict_t* ent) {
+	if (ent->fishEnd != -1) {
+		ent->fishEnd = -1;
+		Cmd_Inven_f(ent);
+		if (ent->determiner <= 0) {
+			int randm = rand() % 5 + ent->lure;
+			int randm3 = rand() % 3 + 3 + (ent->lure/10);
+			switch (randm) {
+			case 0: gi.cprintf(ent, PRINT_HIGH, "Fish Escaped\n");
+				if (ent->employment > 0) {
+					ent->employment--;
+				}
+				break;
+			case 1: ent->mino++;
+				gi.cprintf(ent, PRINT_HIGH, "Caught a mino, number of mino's: %i\n", ent->mino);
+				if (ent->employment > 0) {
+					ent->employment -= rand() % 2;
+					gi.cprintf(ent, PRINT_HIGH, "Employment: %i\n", ent->employment);
+				}
+				break;
+			case 2: ent->cod++;
+				gi.cprintf(ent, PRINT_HIGH, "Caught a cod, number of cod: %i\n", ent->cod);
+				break;
+			case 3: ent->trout++;
+				gi.cprintf(ent, PRINT_HIGH, "Caught a trout, number of trout: %i\n", ent->trout);
+				break;
+			case 4: ent->bass++;
+				gi.cprintf(ent, PRINT_HIGH, "Caught a bass, number of bass: %i\n", ent->bass);
+				break;
+			case 5: ent->salmon++;
+				gi.cprintf(ent, PRINT_HIGH, "Caught a salmon, number of salmon: %i\n", ent->salmon);
+				break;
+			default: 
+				switch (randm3) {
+				case 3: ent->trout++;
+					gi.cprintf(ent, PRINT_HIGH, "Caught a trout, number of trout: %i\n", ent->trout);
+					break;
+				case 4: ent->bass++;
+					gi.cprintf(ent, PRINT_HIGH, "Caught a bass, number of bass: %i\n", ent->bass);
+					break;
+				case 5: ent->salmon++;
+					gi.cprintf(ent, PRINT_HIGH, "Caught a salmon, number of salmon: %i\n", ent->salmon);
+					break;
+				default: ent->tigerfish++;
+				gi.cprintf(ent, PRINT_HIGH, "Caught a tigerfish, number of tigerfish: %i\n", ent->tigerfish);
+				break;
+				}
+			}
+		}
+	}
+	
+	switch (ent->determiner) {
+	case 1: ent->greatwhite++;
+		gi.cprintf(ent, PRINT_HIGH, "Caught a great white, number of great white's: %i\n", ent->greatwhite);
+		ent->employment += rand() % 2;
+		gi.cprintf(ent, PRINT_HIGH, "Employment: %i\n", ent->employment);
+		break;
+	case 2: ent->tigerfish++;
+		gi.cprintf(ent, PRINT_HIGH, "Caught a tigerfish, number of tigerfish: %i\n", ent->tigerfish);
+		break;
+	case 3: ent->blobfish++;
+		gi.cprintf(ent, PRINT_HIGH, "Caught a blobfish, number of blobfish: %i\n", ent->blobfish);
+		ent->inventory += 3;
+		gi.cprintf(ent, PRINT_HIGH, "Blobfish is so slimmy it increases your inventory by 3 new inventory: %i\n", ent->inventory);
+		break;
+	case 4: ent->whaleshark++;
+		ent->strength += rand() % 5 + 1;
+		gi.cprintf(ent, PRINT_HIGH, "Caught a whale shark, number of whale shark's: %i\n", ent->whaleshark);
+		gi.cprintf(ent, PRINT_HIGH, "Catching a whale shark makes you swole, increasing your strength, new strength: %i\n", ent->strength);
+		break;
+	case 5: ent->angelfish++;
+		ent->luck++;
+		gi.cprintf(ent, PRINT_HIGH, "Caught a angelfish, number of angelfish: %i\n", ent->angelfish);
+		gi.cprintf(ent, PRINT_HIGH, "Catching an angelfish increases your luck by 1, new luck: %i\n", ent->luck);
+		break;
+	}
+
+	int rand2 = rand() % 10 + 1;
+	if (rand2 <= ent->luck) {
+		int randm = rand() % 5 + 1;
+		switch (randm) {
+		case 1: ent->mino++;
+			gi.cprintf(ent, PRINT_HIGH, "Caught an extra mino, number of mino's: %i\n", ent->mino);
+			break;
+		case 2: ent->cod++;
+			gi.cprintf(ent, PRINT_HIGH, "Caught an extra cod, number of cod: %i\n", ent->cod);
+			break;
+		case 3: ent->bass++;
+			gi.cprintf(ent, PRINT_HIGH, "Caught an extra bass, number of bass: %i\n", ent->bass);
+			break;
+		case 4: ent->trout++;
+			gi.cprintf(ent, PRINT_HIGH, "Caught an extra trout, number of trout: %i\n", ent->trout);
+			break;
+		case 5: ent->salmon++;
+			gi.cprintf(ent, PRINT_HIGH, "Caught an extra salmon, number of salmon: %i\n", ent->salmon);
+			break;
+		}
+	}
+	int newdollars = 5 * ent->employment;
+	if (ent->employment > 0) {
+		ent->dollars += newdollars;
+		gi.cprintf(ent, PRINT_HIGH, "Got a bonus for your catch, total money: %i\n", ent->dollars);
+	}
+	ent->determiner = -1;
+}
+
 
 /*
 =================
@@ -987,6 +1225,10 @@ void ClientCommand (edict_t *ent)
 		Cmd_Wave_f (ent);
 	else if (Q_stricmp(cmd, "playerlist") == 0)
 		Cmd_PlayerList_f(ent);
+	else if (Q_stricmp(cmd, "fish") == 0)
+		Cmd_fish_f(ent);
+	else if (Q_stricmp(cmd, "catch") == 0)
+		Cmd_catch_f(ent);
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
 }

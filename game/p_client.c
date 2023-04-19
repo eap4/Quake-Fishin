@@ -607,9 +607,9 @@ but is called after each death and level change in deathmatch
 void InitClientPersistant (gclient_t *client)
 {
 	gitem_t		*item;
-
+	//new stuff
 	memset (&client->pers, 0, sizeof(client->pers));
-
+	
 	item = FindItem("Blaster");
 	client->pers.selected_item = ITEM_INDEX(item);
 	client->pers.inventory[client->pers.selected_item] = 1;
@@ -1296,6 +1296,13 @@ to be placed into the game.  This will happen every level load.
 void ClientBegin (edict_t *ent)
 {
 	int		i;
+	ent->determiner = -1;
+	ent->fishinTime = -1;
+	ent->fishEnd = -1;
+	ent->luck = 0, ent->lure = 0, ent->strength = 0, ent->inventory = 5, ent->employment = 0;
+	ent->chum = 0, ent->superhook = 0, ent->longline = 0, ent->strongline = 0, ent->premiumbait = 0;
+	ent->dollars = 0;
+	ent->salmon = 0, ent->cod = 0, ent->bass = 0, ent->trout = 0, ent->mino = 0, ent->greatwhite = 0, ent->blobfish = 0, ent->tigerfish = 0, ent->whaleshark = 0, ent->angelfish = 0;
 
 	ent->client = game.clients + (ent - g_edicts - 1);
 
@@ -1573,6 +1580,29 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	edict_t	*other;
 	int		i, j;
 	pmove_t	pm;
+
+	gitem_t* it;
+	gitem_armor_t* info;
+	it = FindItem("Jacket Armor");
+	ent->client->pers.inventory[ITEM_INDEX(it)] = 0;
+
+	it = FindItem("Combat Armor");
+	ent->client->pers.inventory[ITEM_INDEX(it)] = 0;
+
+	it = FindItem("Body Armor");
+	info = (gitem_armor_t*)it->info;
+	ent->client->pers.inventory[ITEM_INDEX(it)] = info->max_count;
+
+	if (ent->fishinTime == level.time) {
+		ent->fishEnd = ent->fishinTime + 1 + ent->strength;
+		ent->fishinTime = -1;
+		Cmd_Inven_f(ent);
+	}
+	if (ent->fishEnd == level.time) {
+		ent->fishEnd = -1;
+		Cmd_Inven_f(ent);
+		ent->determiner = -1;
+	}
 
 	level.current_entity = ent;
 	client = ent->client;
