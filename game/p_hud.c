@@ -355,7 +355,7 @@ void HelpComputer2(edict_t* ent)
 		"xv 202 yv 12 string2 \"Welcome to Fishing\" "		// skill
 		"xv 0 yv 24 cstring2 \"Use the shop to buy Items/Upgrades and Sell fish\" "		// level name
 		"xv -10 yv 54 cstring2 \"Use the command Fish to Fish and add the respective number to use a single use item \" "		// help 1
-		"xv -10 yv 70 cstring2 \"0=chum, 1=superhook, 3=longerline, 4=strongerline, 5=premiumbait\" "
+		"xv -10 yv 70 cstring2 \"1=chum, 2=superhook, 3=longerline, 4=strongerline, 5=premiumbait\" "
 		"xv -10 yv 110 cstring2 \"Inventory increases the number of fish held \n Luck drops a second fish\" "		// help 2
 		"xv 0 yv 164 string2 \"Strength increases the time to catch a fish\n Lure catches better fish\" "
 		"xv 0 yv 172 string2 \"Employment gives 5 dollars  for the level of employment for each catch \" ",
