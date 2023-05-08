@@ -1032,12 +1032,12 @@ void Cmd_fish_f(edict_t* ent) {
 }
 
 void Cmd_catch_f(edict_t* ent) {
-	if (ent->fishEnd != -1) {
+	if (ent->fishEnd != -1 && ent->client->showinventory == true) {
 		ent->fishEnd = -1;
 		Cmd_Inven_f(ent);
 		if (ent->determiner <= 0) {
 			int randm = rand() % 5 + ent->lure;
-			int randm3 = rand() % 3 + 3 + (ent->lure/10);
+			int randm3 = rand() % 3 + 3 + (ent->lure / 10);
 			switch (randm) {
 			case 0: gi.cprintf(ent, PRINT_HIGH, "Fish Escaped\n");
 				if (ent->employment > 0) {
@@ -1063,7 +1063,7 @@ void Cmd_catch_f(edict_t* ent) {
 			case 5: ent->salmon++;
 				gi.cprintf(ent, PRINT_HIGH, "Caught a salmon, number of salmon: %i\n", ent->salmon);
 				break;
-			default: 
+			default:
 				switch (randm3) {
 				case 3: ent->trout++;
 					gi.cprintf(ent, PRINT_HIGH, "Caught a trout, number of trout: %i\n", ent->trout);
@@ -1075,66 +1075,67 @@ void Cmd_catch_f(edict_t* ent) {
 					gi.cprintf(ent, PRINT_HIGH, "Caught a salmon, number of salmon: %i\n", ent->salmon);
 					break;
 				default: ent->tigerfish++;
-				gi.cprintf(ent, PRINT_HIGH, "Caught a tigerfish, number of tigerfish: %i\n", ent->tigerfish);
-				break;
+					gi.cprintf(ent, PRINT_HIGH, "Caught a tigerfish, number of tigerfish: %i\n", ent->tigerfish);
+					break;
 				}
 			}
 		}
-	}
-	
-	switch (ent->determiner) {
-	case 1: ent->greatwhite++;
-		gi.cprintf(ent, PRINT_HIGH, "Caught a great white, number of great white's: %i\n", ent->greatwhite);
-		ent->employment += rand() % 2;
-		gi.cprintf(ent, PRINT_HIGH, "Employment: %i\n", ent->employment);
-		break;
-	case 2: ent->tigerfish++;
-		gi.cprintf(ent, PRINT_HIGH, "Caught a tigerfish, number of tigerfish: %i\n", ent->tigerfish);
-		break;
-	case 3: ent->blobfish++;
-		gi.cprintf(ent, PRINT_HIGH, "Caught a blobfish, number of blobfish: %i\n", ent->blobfish);
-		ent->inventory += 3;
-		gi.cprintf(ent, PRINT_HIGH, "Blobfish is so slimmy it increases your inventory by 3 new inventory: %i\n", ent->inventory);
-		break;
-	case 4: ent->whaleshark++;
-		ent->strength += rand() % 5 + 1;
-		gi.cprintf(ent, PRINT_HIGH, "Caught a whale shark, number of whale shark's: %i\n", ent->whaleshark);
-		gi.cprintf(ent, PRINT_HIGH, "Catching a whale shark makes you swole, increasing your strength, new strength: %i\n", ent->strength);
-		break;
-	case 5: ent->angelfish++;
-		ent->luck++;
-		gi.cprintf(ent, PRINT_HIGH, "Caught a angelfish, number of angelfish: %i\n", ent->angelfish);
-		gi.cprintf(ent, PRINT_HIGH, "Catching an angelfish increases your luck by 1, new luck: %i\n", ent->luck);
-		break;
-	}
 
-	int rand2 = rand() % 10 + 1;
-	if (rand2 <= ent->luck) {
-		int randm = rand() % 5 + 1;
-		switch (randm) {
-		case 1: ent->mino++;
-			gi.cprintf(ent, PRINT_HIGH, "Caught an extra mino, number of mino's: %i\n", ent->mino);
+
+		switch (ent->determiner) {
+		case 1: ent->greatwhite++;
+			gi.cprintf(ent, PRINT_HIGH, "Caught a great white, number of great white's: %i\n", ent->greatwhite);
+			ent->employment += rand() % 2;
+			gi.cprintf(ent, PRINT_HIGH, "Employment: %i\n", ent->employment);
 			break;
-		case 2: ent->cod++;
-			gi.cprintf(ent, PRINT_HIGH, "Caught an extra cod, number of cod: %i\n", ent->cod);
+		case 2: ent->tigerfish++;
+			gi.cprintf(ent, PRINT_HIGH, "Caught a tigerfish, number of tigerfish: %i\n", ent->tigerfish);
 			break;
-		case 3: ent->bass++;
-			gi.cprintf(ent, PRINT_HIGH, "Caught an extra bass, number of bass: %i\n", ent->bass);
+		case 3: ent->blobfish++;
+			gi.cprintf(ent, PRINT_HIGH, "Caught a blobfish, number of blobfish: %i\n", ent->blobfish);
+			ent->inventory += 3;
+			gi.cprintf(ent, PRINT_HIGH, "Blobfish is so slimmy it increases your inventory by 3 new inventory: %i\n", ent->inventory);
 			break;
-		case 4: ent->trout++;
-			gi.cprintf(ent, PRINT_HIGH, "Caught an extra trout, number of trout: %i\n", ent->trout);
+		case 4: ent->whaleshark++;
+			ent->strength += rand() % 5 + 1;
+			gi.cprintf(ent, PRINT_HIGH, "Caught a whale shark, number of whale shark's: %i\n", ent->whaleshark);
+			gi.cprintf(ent, PRINT_HIGH, "Catching a whale shark makes you swole, increasing your strength, new strength: %i\n", ent->strength);
 			break;
-		case 5: ent->salmon++;
-			gi.cprintf(ent, PRINT_HIGH, "Caught an extra salmon, number of salmon: %i\n", ent->salmon);
+		case 5: ent->angelfish++;
+			ent->luck++;
+			gi.cprintf(ent, PRINT_HIGH, "Caught a angelfish, number of angelfish: %i\n", ent->angelfish);
+			gi.cprintf(ent, PRINT_HIGH, "Catching an angelfish increases your luck by 1, new luck: %i\n", ent->luck);
 			break;
 		}
+
+		int rand2 = rand() % 10 + 1;
+		if (rand2 <= ent->luck) {
+			int randm = rand() % 5 + 1;
+			switch (randm) {
+			case 1: ent->mino++;
+				gi.cprintf(ent, PRINT_HIGH, "Caught an extra mino, number of mino's: %i\n", ent->mino);
+				break;
+			case 2: ent->cod++;
+				gi.cprintf(ent, PRINT_HIGH, "Caught an extra cod, number of cod: %i\n", ent->cod);
+				break;
+			case 3: ent->bass++;
+				gi.cprintf(ent, PRINT_HIGH, "Caught an extra bass, number of bass: %i\n", ent->bass);
+				break;
+			case 4: ent->trout++;
+				gi.cprintf(ent, PRINT_HIGH, "Caught an extra trout, number of trout: %i\n", ent->trout);
+				break;
+			case 5: ent->salmon++;
+				gi.cprintf(ent, PRINT_HIGH, "Caught an extra salmon, number of salmon: %i\n", ent->salmon);
+				break;
+			}
+		}
+		int newdollars = 5 * ent->employment;
+		if (ent->employment > 0) {
+			ent->dollars += newdollars;
+			gi.cprintf(ent, PRINT_HIGH, "Got a bonus for your catch, total money: %i\n", ent->dollars);
+		}
+		ent->determiner = -1;
 	}
-	int newdollars = 5 * ent->employment;
-	if (ent->employment > 0) {
-		ent->dollars += newdollars;
-		gi.cprintf(ent, PRINT_HIGH, "Got a bonus for your catch, total money: %i\n", ent->dollars);
-	}
-	ent->determiner = -1;
 }
 
 
